@@ -1,23 +1,34 @@
-import { useState, useContext, createContext } from "react";
+import { useState, useContext, createContext, useEffect } from 'react'
+import fetchUser from '../services/user'
 
-const UserContext = createContext();
+const UserContext = createContext()
 
-function UserProvider({children}) {
-    const [user, setUser] = useState({})
+function UserProvider({ children }) {
+  const [user, setUser] = useState({})
 
-    const UserValues = {user, setUser}
+  useEffect(() => {
+    fetchUser()
+      .then((fetchedUser) => {
+        setUser(fetchedUser)
+      })
+      .catch((error) => {
+        throw new Error(`Error: ${error}`)
+      })
+  }, [setUser])
 
-    return <UserContext.Provider value={UserValues}>{children}</UserContext.Provider>
+  const UserValues = { user, setUser }
+
+  return <UserContext.Provider value={UserValues}>{children}</UserContext.Provider>
 }
 
 const useUser = () => {
-const context = useContext(UserContext)
+  const context = useContext(UserContext)
 
-if (context === undefined) {
+  if (context === undefined) {
     throw new Error('useUser must be defined within an UserContext Provider')
   }
 
   return context
 }
 
-export {UserProvider, useUser}
+export { UserProvider, useUser }
