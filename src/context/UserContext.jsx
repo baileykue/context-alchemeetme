@@ -16,7 +16,7 @@ function UserProvider({ children }) {
       })
   }, [setUser])
 
-  const UserValues = { user, setUser }
+  const UserValues = { user }
 
   return <UserContext.Provider value={UserValues}>{children}</UserContext.Provider>
 }
